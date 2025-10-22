@@ -1,0 +1,13 @@
+services:
+  ds-1:
+    image: postgis/postgis:latest
+    ports:
+      - "${DATASTORE_1_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${DATASTORE_1_USER}
+      POSTGRES_PASSWORD: ${DATASTORE_1_PASSWORD}
+      POSTGRES_DB: ${DATASTORE_1_DATABASE}
+      PGDATA: /var/lib/pg_data
+    volumes:
+      - ./migration-1.sql:/docker-entrypoint-initdb.d/migration-1.sql
+
