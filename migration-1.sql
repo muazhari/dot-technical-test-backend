@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS post
 (
     id         uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
     content    text        NOT NULL,
-    author_id  uuid        NOT NULL REFERENCES account (id) ON DELETE CASCADE,
+    author_id  uuid        NOT NULL REFERENCES account (id) ON DELETE CASCADE ON UPDATE CASCADE,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS comment
 (
     id         uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
     content    text        NOT NULL,
-    author_id  uuid        NOT NULL REFERENCES account (id) ON DELETE CASCADE,
-    post_id    uuid        NOT NULL REFERENCES post (id) ON DELETE CASCADE,
+    author_id  uuid        NOT NULL REFERENCES account (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    post_id    uuid        NOT NULL REFERENCES post (id) ON DELETE CASCADE ON UPDATE CASCADE,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -44,9 +44,9 @@ SELECT 'This is a post ' || gen_random_uuid()::text,
        account.id
 FROM account;
 
--- insert comment with random uuid into with dot product of post and account
 INSERT INTO comment (content, author_id, post_id)
 SELECT 'This is a comment ' || gen_random_uuid()::text,
        account.id,
        post.id
-FROM account CROSS JOIN post
+FROM account
+         CROSS JOIN post

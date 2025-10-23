@@ -39,14 +39,14 @@ export class AccountController {
     }
 
     @ApiOperation({summary: 'Update an account (self or admin)'})
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() dto: UpdateAccountDto) {
-        return this.service.update(id, dto);
+    @Patch(':accountId')
+    update(@Param('accountId') accountId: string, @Body() dto: UpdateAccountDto) {
+        return this.service.update(accountId, dto);
     }
 
     @ApiOperation({summary: 'Delete an account (self or admin)'})
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.service.remove(id);
+    @Delete(':accountId')
+    remove(@Param('accountId') accountId: string) {
+        return this.service.remove(accountId);
     }
 }

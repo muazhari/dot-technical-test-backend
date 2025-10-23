@@ -1,5 +1,5 @@
 import {Body, Controller, Delete, Get, Param, Patch, Post as HttpPost, UseGuards} from '@nestjs/common';
-import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {JwtAuthGuard} from '../common.guard';
 import {RolesGuard} from '../../common/auth/roles.guard';
 import {CommentService} from './comment.service';
@@ -25,23 +25,27 @@ export class CommentController {
     constructor(private readonly service: CommentService) {
     }
 
+    @ApiOperation({summary: 'List comments'})
     @Get()
     list(@Param('postId') postId: string) {
         return this.service.list(postId);
     }
 
+    @ApiOperation({summary: 'Create a comment'})
     @HttpPost()
     create(@Param('postId') postId: string, @Body() dto: CreateCommentDto) {
         return this.service.create(postId, dto);
     }
 
-    @Patch(':id')
-    update(@Param('postId') postId: string, @Param('id') id: string, @Body() dto: UpdateCommentDto) {
-        return this.service.update(postId, id, dto);
+    @ApiOperation({summary: 'Update a comment (self or admin)'})
+    @Patch(':commentId')
+    update(@Param('postId') postId: string, @Param('commentId') commentId: string, @Body() dto: UpdateCommentDto) {
+        return this.service.update(postId, commentId, dto);
     }
 
-    @Delete(':id')
-    remove(@Param('postId') postId: string, @Param('id') id: string) {
-        return this.service.remove(postId, id);
+    @ApiOperation({summary: 'Delete a comment (self or admin)'})
+    @Delete(':commentId')
+    remove(@Param('postId') postId: string, @Param('commentId') commentId: string) {
+        return this.service.remove(postId, commentId);
     }
 }

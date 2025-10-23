@@ -2,7 +2,7 @@ import {ForbiddenException, Inject, Injectable, NotFoundException, Scope} from '
 import {UnitOfWork} from '../../common/transaction/unit-of-work.service';
 import {Post} from '../../infra/database/entities/post.entity';
 import {Comment} from '../../infra/database/entities/comment.entity';
-import {Account} from '../../infra/database/entities/account.entity';
+import {Account, Role} from '../../infra/database/entities/account.entity';
 import {REQUEST} from '@nestjs/core';
 import {Request} from 'express';
 
@@ -12,7 +12,7 @@ export class CommentService {
     }
 
     private get user() {
-        return this.req.user as { userId: string; role: 'user' | 'admin' };
+        return this.req.user as { userId: string; role: Role };
     }
 
     async list(postId: string) {
@@ -34,9 +34,9 @@ export class CommentService {
         return {id: comment.id, content: comment.content, authorId: author.id};
     }
 
-    async update(postId: string, id: string, dto: { content: string }) {
+    async update(postId: string, commentId: string, dto: { content: string }) {
         const commentRepo = this.uow.getRepository(Comment);
-        const comment = await commentRepo.findOne({where: {id, post: {id: postId}}});
+        const comment = await commentRepo.findOne({where: {id: commentId, post: {id: postId}}});
         if (!comment) throw new NotFoundException('Comment not found');
         if (this.user.role !== 'admin' && comment.author.id !== this.user.userId) throw new ForbiddenException();
         comment.content = dto.content;
@@ -44,9 +44,9 @@ export class CommentService {
         return {id: comment.id, content: comment.content};
     }
 
-    async remove(postId: string, id: string) {
+    async remove(postId: string, commentId: string) {
         const commentRepo = this.uow.getRepository(Comment);
-        const comment = await commentRepo.findOne({where: {id, post: {id: postId}}});
+        const comment = await commentRepo.findOne({where: {id: commentId, post: {id: postId}}});
         if (!comment) throw new NotFoundException('Comment not found');
         if (this.user.role !== 'admin' && comment.author.id !== this.user.userId) throw new ForbiddenException();
         await commentRepo.remove(comment);

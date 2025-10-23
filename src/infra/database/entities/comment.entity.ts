@@ -18,11 +18,11 @@ export class Comment {
     @Column({type: 'text'})
     content!: string;
 
-    @ManyToOne(() => Account, (a) => a.comments, {eager: true, onDelete: 'CASCADE'})
+    @ManyToOne(() => Account, (a) => a.comments, {eager: true, onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinColumn({name: 'author_id'})
     author!: Account;
 
-    @ManyToOne(() => Post, (p) => p.comments, {onDelete: 'CASCADE'})
+    @ManyToOne(() => Post, (p) => p.comments, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinColumn({name: 'post_id'})
     post!: Post;
 

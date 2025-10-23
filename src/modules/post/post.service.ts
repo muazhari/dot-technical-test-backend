@@ -1,7 +1,7 @@
 import {ForbiddenException, Inject, Injectable, NotFoundException, Scope} from '@nestjs/common';
 import {UnitOfWork} from '../../common/transaction/unit-of-work.service';
 import {Post} from '../../infra/database/entities/post.entity';
-import {Account} from '../../infra/database/entities/account.entity';
+import {Account, Role} from '../../infra/database/entities/account.entity';
 import {REQUEST} from '@nestjs/core';
 import {Request} from 'express';
 
@@ -11,7 +11,7 @@ export class PostService {
     }
 
     private get user() {
-        return this.req.user as { userId: string; role: 'user' | 'admin' };
+        return this.req.user as { userId: string; role: Role };
     }
 
     async list() {
@@ -30,9 +30,9 @@ export class PostService {
         return {id: post.id, content: post.content, authorId: author.id};
     }
 
-    async update(id: string, dto: { content: string }) {
+    async update(postId: string, dto: { content: string }) {
         const postRepo = this.uow.getRepository(Post);
-        const post = await postRepo.findOne({where: {id}});
+        const post = await postRepo.findOne({where: {id: postId}});
         if (!post) throw new NotFoundException('Post not found');
         if (this.user.role !== 'admin' && post.author.id !== this.user.userId) throw new ForbiddenException();
         post.content = dto.content;
@@ -40,9 +40,9 @@ export class PostService {
         return {id: post.id, content: post.content};
     }
 
-    async remove(id: string) {
+    async remove(postId: string) {
         const postRepo = this.uow.getRepository(Post);
-        const post = await postRepo.findOne({where: {id}});
+        const post = await postRepo.findOne({where: {id: postId}});
         if (!post) throw new NotFoundException('Post not found');
         if (this.user.role !== 'admin' && post.author.id !== this.user.userId) throw new ForbiddenException();
         await postRepo.remove(post);

@@ -19,7 +19,7 @@ export class Post {
     @Column({type: 'text'})
     content!: string;
 
-    @ManyToOne(() => Account, (a) => a.posts, {eager: true, onDelete: 'CASCADE'})
+    @ManyToOne(() => Account, (a) => a.posts, {eager: true, onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinColumn({name: 'author_id'})
     author!: Account;
 

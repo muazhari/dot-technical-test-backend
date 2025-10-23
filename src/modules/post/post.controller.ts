@@ -38,14 +38,14 @@ export class PostController {
     }
 
     @ApiOperation({summary: 'Update a post (self or admin)'})
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
-        return this.service.update(id, dto);
+    @Patch(':postId')
+    update(@Param('postId') postId: string, @Body() dto: UpdatePostDto) {
+        return this.service.update(postId, dto);
     }
 
     @ApiOperation({summary: 'Delete a post (self or admin)'})
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.service.remove(id);
+    @Delete(':postId')
+    remove(@Param('postId') postId: string) {
+        return this.service.remove(postId);
     }
 }

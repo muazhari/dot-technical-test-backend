@@ -2,7 +2,7 @@
 
 A simple social media backend REST API built with NestJS and TypeORM following a pragmatic clean architecture structure. It provides JWT authentication (register/login), accounts, posts, and comments CRUD with role-based authorization (user/admin), PostgreSQL persistence, request-scoped transactions, Swagger docs, Docker Compose, and E2E tests.
 
-## Why Clean Architecture
+## Why Clean Architecture Pattern
 
 - Separation of concerns: controllers, services, and persistence.
 - Testability: business logic isolated from frameworks and database specifics.
