@@ -1,5 +1,5 @@
 services:
-  ds-1:
+  datastore-1:
     image: postgis/postgis:latest
     ports:
       - "${DATASTORE_1_PORT}:5432"

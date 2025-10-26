@@ -20,7 +20,7 @@ In this repo we keep it pragmatic and lightweight:
 - Posts CRUD
 - Comments CRUD
 - Role-based access control (admin can delete/update any post/comment, users only their own)
-- Globally accessible per-request transaction using AsyncLocalStorage
+- Globally accessible per-request retryable safer transaction using AsyncLocalStorage and serializable isolation level
 - Swagger docs at `/api`
 - Docker Compose with PostgreSQL and automatic migrations
 - E2E tests (Supertest + Jest)
@@ -50,7 +50,7 @@ PORT=3000
 3. Start PostgreSQL quickly with Docker
 
 ```cmd
-docker compose up -d ds-1
+docker compose up -d datastore-1
 ```
 
 4. Start the API in dev
@@ -71,12 +71,6 @@ npm run test:e2e
 
 Latest test results:  
 ![img.png](e2e-test-result-1.png)
-
-## Project Structure
-
-- `src/modules/*` controllers and services for auth, accounts, posts, comments
-- `src/common/*` transaction, jwt, roles, guards
-- `src/infra/database/*` data source, entities
 
 ## API Overview
 
@@ -101,7 +95,7 @@ Latest test results:
 
 ## Notes
 
-- Transactions: Each HTTP request runs in a specific transaction isolation level. A Unit of Work design pattern exposes the transaction-scoped repository.
+- Transactions: Each HTTP request runs in the highest transaction isolation level to be much safer in data consistency. A Unit of Work design pattern exposes the transaction-scoped repository.
 - Migrations: Schema and seed are applied via `migration-1.sql` on `datastore-1` docker container startup.
 - Security: Keep environment variables secure.
 
